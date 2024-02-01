@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 
-  // use soft delete plugin
+
  
 
 const SubTask = new mongoose.Schema({
@@ -16,8 +16,7 @@ const SubTask = new mongoose.Schema({
     default:0
   },
  
-  // timestamps: { createdAt: 'created_at', updatedAt: 'updated_at',deletedAt:'deleted_at' }
-  isdeleted:{
+    isdeleted:{
     type:Boolean,
     default:false
   },
