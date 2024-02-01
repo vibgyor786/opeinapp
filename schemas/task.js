@@ -1,42 +1,42 @@
 const mongoose = require("mongoose");
 
-const task = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
+const task = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    dueDate: {
+      type: Date,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+
+      default: "TODO",
+    },
+    priority: {
+      type: Number,
+      required: true,
+    },
+   
+    isdeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+    },
   },
-title:{
-    type: String,
-    required: true,
-    
-},
-dueDate:{
-    type:Date,
-    required:true
-},
-description: {
-    type: String,
-    required: true,
-    
-},
-  status: {
-    type: String,
-  
-    default:'TODO'
-  },
- priority:{
-  type: Number,
-  required: true,
- },
-  // timestamps: { createdAt: 'created_at', updatedAt: 'updated_at',deletedAt:'deleted_at' }
- 
-  isdeleted:{
-    type:Boolean,
-    default:false
-  },
-  deletedAt:{
-    type:Date
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 const subTask = mongoose.model("task", task);
 module.exports = subTask;
