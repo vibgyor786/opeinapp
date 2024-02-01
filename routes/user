@@ -1,0 +1,89 @@
+const express = require("express");
+const app = express();
+const router = express.Router();
+const user=require('../schemas/userSchema')
+const task=require('../schemas/task')
+const subtask=require('../schemas/subTask')
+const { jwtDecode } = require('jwt-decode');
+
+router.post("/saveUser",async(req,res)=>{
+
+    const sampleUser=req.body;
+    try{
+        const alreadysaveddata=await user.find({phoneNumber:req.body.phoneNo})
+        
+        if(alreadysaveddata.length!=0){
+            res.status(200).send({
+                Error:"Phone number already exits"
+            })
+            return;
+        }
+        const newUser=new user({
+            phoneNumber:req.body.phoneNo
+        })
+
+        const data= await newUser.save();
+        res.send(data)
+    }catch(e){
+        res.status(200).send({
+            "Error":e
+        })
+    }
+})
+
+router.get('/getusertask',async(req,res)=>{
+    if(req.body.token==null ){
+        res.status(200).send({
+            Error:"token is not available"
+        })
+    }
+    
+    try{
+        const sampleTask=req.body.token;
+        const decodedid = jwtDecode(sampleTask);
+        
+        let data;
+        // console.log(req.body.filter=='priority')
+        // const x=(await task.find())
+        // console.log(x)
+        if(req.body.filter=='priority'){
+            data =await task.find({
+                userId:decodedid.id,isdeleted:false
+            }).sort({priority:1 }).limit(req.body.limit)
+        }
+    else if(req.body.filter=='date'){
+        data =await task.find({
+            userId:decodedid.id,isdeleted:false
+        }).sort({dueDate:1 }).limit(req.body.limit)
+     }else{
+        data =await task.find({
+            userId:decodedid.id,isdeleted:false
+        }).limit(req.body.limit)
+     }
+        res.status(200).send(data)
+    }catch(e){
+        res.status(200).send({
+            "Error":e
+        })
+    }
+  
+})
+router.get("/getsubtask",async( req,res)=>{
+if(req.body.taskId==null){
+    res.status(200).send({
+        Error:"Task Id is missing"
+    })
+}
+console.log(req.body.taskId)
+try{
+    const data= await subtask.find({taskId:req.body.taskId,isdeleted:false});
+
+    res.status(200).send(data)
+
+}catch(e){
+        res.status(200).send({
+            "Error":e
+        })
+    }
+})
+module.exports = router;
